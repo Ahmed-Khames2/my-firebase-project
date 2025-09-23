@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_firebase_app/cubits/auth/auth_cubit.dart';
+import 'package:my_firebase_app/features/admin/AdminDashboard.dart';
 import 'package:my_firebase_app/pages/chat_page.dart';
 import 'package:my_firebase_app/pages/login_page.dart';
 import 'package:my_firebase_app/pages/resgister_page.dart';
@@ -30,6 +31,7 @@ class ScholarChat extends StatelessWidget {
         LoginPage.id: (context) => LoginPage(),
         RegisterPage.id: (context) => RegisterPage(),
         ChatPage.id: (context) => ChatPage(),
+        AdminDashboard.id: (context) => AdminDashboard(),
       },
       initialRoute: LoginPage.id,
     );

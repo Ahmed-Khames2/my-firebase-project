@@ -50,3 +50,16 @@ windows   1:561025241791:web:76160330b1a2fec06f2c0a
   //     return null;
   //   }
   // }
+
+
+
+
+
+
+//   DocumentSnapshot userDoc = await FirebaseFirestore.instance
+//     .collection('users')
+//     .doc(FirebaseAuth.instance.currentUser!.uid)
+//     .get();
+
+// String name = userDoc['name'];
+// String imageUrl = userDoc['profileImageUrl'];

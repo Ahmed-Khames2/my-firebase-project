@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:my_firebase_app/consatnt.dart';
+import 'package:my_firebase_app/helper/show_snack_bar.dart';
 import 'package:my_firebase_app/widgets/custom_button.dart';
 import 'package:my_firebase_app/widgets/custom_text_field.dart';
-import 'package:my_firebase_app/services/auth_service.dart'; // <-- هنا ضفنا الـ Service
+import 'package:my_firebase_app/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key? key}) : super(key: key);
@@ -18,9 +19,11 @@ class _RegisterPageState extends State<RegisterPage> {
   String? email;
   String? password;
   bool isLoading = false;
-  GlobalKey<FormState> formKey = GlobalKey();
+  String? name;
+  String? profileImageUrl;
 
-  AuthService authService = AuthService(); // instance of AuthService
+  GlobalKey<FormState> formKey = GlobalKey();
+  AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -36,19 +39,6 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 SizedBox(height: 75),
                 Image.asset('assets/images/scholar.png', height: 100),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Scholar Chat',
-                      style: TextStyle(
-                        fontSize: 32,
-                        color: Colors.white,
-                        fontFamily: 'pacifico',
-                      ),
-                    ),
-                  ],
-                ),
                 SizedBox(height: 75),
                 Row(
                   children: [
@@ -60,16 +50,17 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(height: 20),
                 CustomFormTextField(
-                  onChanged: (data) {
-                    email = data;
-                  },
+                  onChanged: (data) => name = data,
+                  hintText: 'Name',
+                ),
+                SizedBox(height: 10),
+                CustomFormTextField(
+                  onChanged: (data) => email = data,
                   hintText: 'Email',
                 ),
                 SizedBox(height: 10),
                 CustomFormTextField(
-                  onChanged: (data) {
-                    password = data;
-                  },
+                  onChanged: (data) => password = data,
                   hintText: 'Password',
                 ),
                 SizedBox(height: 20),
@@ -82,6 +73,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         context: context,
                         email: email!,
                         password: password!,
+                        name: name!,
+                        profileImageUrl: profileImageUrl,
                       );
 
                       setState(() => isLoading = false);
@@ -98,9 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       style: TextStyle(color: Colors.white),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
+                      onTap: () => Navigator.pop(context),
                       child: Text(
                         '  Login',
                         style: TextStyle(color: Color(0xffC7EDE6)),
