@@ -5,30 +5,7 @@ import 'package:my_firebase_app/features/Auth/services/auth_service.dart';
 // import 'package:my_firebase_app/consatnt.dart';
 // import 'package:my_firebase_app/models/message.dart';
 // import 'package:my_firebase_app/widgets/chat_buble.dart';
-class ChatPage extends StatelessWidget {
-  static String id = 'ChatPage';
 
-  const ChatPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    AuthService authService = AuthService();
-
-    return Scaffold(
-      appBar: AppBar(title: Text('hello')),
-      body: Column(
-        children: [
-          // FirebaseAuth.instance.currentUser!.emailVerified?Text('welcom'):Text("please verified"),
-          ElevatedButton(
-            onPressed: () {
-              authService.signOut(context);
-            },
-            child: Icon(Icons.add_ic_call),
-          ),
-        ],
-      ),
-    );
-  }
 
   //   Future<void> signOut(BuildContext context) async {
   //   await FirebaseAuth.instance.signOut();
@@ -39,7 +16,7 @@ class ChatPage extends StatelessWidget {
   //     (Route<dynamic> route) => false, // امسح كل الصفحات القديمة
   //   );
   // }
-}
+// }
 
 // class ChatPage extends StatelessWidget {
 //   static String id = 'ChatPage';

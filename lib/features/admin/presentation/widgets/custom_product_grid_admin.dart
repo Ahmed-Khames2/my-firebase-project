@@ -1,41 +1,49 @@
-
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_firebase_app/core/models/product_model.dart';
 import 'package:my_firebase_app/core/routes/app_routes.dart';
-import 'package:my_firebase_app/core/theme/app_color.dart';
-import 'package:my_firebase_app/core/theme/styles.dart';
 import 'package:my_firebase_app/features/admin/cubits/admin_cubit/admin_cubit.dart';
+import 'package:my_firebase_app/features/admin/cubits/admin_cubit/admin_state.dart';
+import 'package:my_firebase_app/features/admin/presentation/widgets/product_card.dart';
 
-void showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
+class ProductsGridAdmin extends StatelessWidget {
+  const ProductsGridAdmin({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: BlocBuilder<ProductCubit, ProductState>(
+        builder: (context, state) {
+          if (state is ProductLoading)
+            return const Center(child: CircularProgressIndicator());
+          if (state is ProductError) return Center(child: Text(state.error));
+
+          final products = state is ProductLoaded ? state.filteredProducts : [];
+          if (products.isEmpty) return Center(child: Text("No products found"));
+
+          return GridView.builder(
+            padding: const EdgeInsets.all(12),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 0.68,
+            ),
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final p = products[index];
+              return ProductCard(
+                product: p,
+                onTap: () => showProductOptions(context, p),
+              );
+            },
+          );
+        },
       ),
     );
   }
 
-    void showCustomSnackBar(
-    BuildContext context,
-    String message, {
-    bool success = true,
-  }) {
-    final color = success ? AppColors.primary : Colors.red;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: AppStyles.body1SemiBold.copyWith(color: Colors.white),
-        ),
-        backgroundColor: color,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
-
-    void showProductOptions(BuildContext context, ProductModel product) {
+  void showProductOptions(BuildContext context, ProductModel product) {
     showDialog(
       context: context,
       builder:
@@ -73,3 +81,4 @@ void showSnackBar(BuildContext context, String message) {
           ),
     );
   }
+}

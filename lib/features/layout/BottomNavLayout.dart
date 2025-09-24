@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:my_firebase_app/core/theme/app_color.dart';
 import 'package:my_firebase_app/features/products/presentation/products_page.dart';
 
-
 class BottomNavLayout extends StatefulWidget {
   const BottomNavLayout({super.key});
 

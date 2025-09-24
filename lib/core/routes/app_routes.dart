@@ -11,12 +11,14 @@ import 'package:my_firebase_app/features/layout/BottomNavLayout.dart';
 // import 'package:my_firebase_app/features/chat/chat_page.dart';
 // import 'package:my_firebase_app/features/admin/admin_dashboard.dart';
 import 'package:my_firebase_app/core/models/product_model.dart';
+import 'package:my_firebase_app/features/products/presentation/product_details_page.dart';
+import 'package:my_firebase_app/features/products/presentation/products_page.dart';
 
 class AppRoutes {
   static const String layout = '/';
   static const String login = '/login';
   static const String register = '/register';
-  static const String chat = '/chat';
+  static const String productPage = '/productPage';
   static const String adminDashboard = '/adminDashboard';
   static const String productDetails = '/productDetails';
   static const String addProduct = "/addProduct";
@@ -30,10 +32,19 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => LoginPage());
       case register:
         return MaterialPageRoute(builder: (_) => RegisterPage());
-      case chat:
-        return MaterialPageRoute(builder: (_) => ChatPage());
+      case productPage:
+        return MaterialPageRoute(builder: (_) => ProductsPage());
       case adminDashboard:
         return MaterialPageRoute(builder: (_) => AdminDashboard());
+      case productDetails:
+        final args = settings.arguments;
+        if (args is ProductModel) {
+          return MaterialPageRoute(
+            builder: (_) => ProductDetailsPage(product: args),
+          );
+        }
+        return _errorRoute("ProductDetails needs ProductModel as arguments.");
+
       case addProduct:
         return MaterialPageRoute(builder: (_) => AddProductPage());
       case editProduct:

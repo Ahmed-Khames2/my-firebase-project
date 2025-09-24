@@ -7,6 +7,18 @@ const kMessagesCollections = 'messages';
 const kMessage = 'message';
 const kCreatedAt = 'createdAt';
 
+// lib/core/constants/categories.dart
+class Categories {
+  static const List<String> all = [
+    "All",
+    "Electronics",
+    "Clothes",
+    "Shoes",
+    "Accessories",
+  ];
+}
+
+
 /**
  * 
  * Platform  Firebase App Id

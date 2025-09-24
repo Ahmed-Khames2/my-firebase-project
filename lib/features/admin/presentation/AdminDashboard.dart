@@ -1,109 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_firebase_app/core/routes/app_routes.dart';
-import 'package:my_firebase_app/core/models/product_model.dart';
+import 'package:my_firebase_app/core/theme/app_color.dart';
+import 'package:my_firebase_app/features/Auth/services/auth_service.dart';
+import 'package:my_firebase_app/features/admin/cubits/admin_cubit/admin_cubit.dart';
+import 'package:my_firebase_app/features/admin/presentation/widgets/custom_product_grid_admin.dart';
+import 'package:my_firebase_app/features/admin/presentation/widgets/custom_app_bar.dart';
+import 'package:my_firebase_app/features/admin/presentation/widgets/custom_catagery.dart';
+import 'package:my_firebase_app/features/admin/presentation/widgets/custom_search_bar.dart';
 import 'package:my_firebase_app/features/admin/service/product_service.dart';
 
 class AdminDashboard extends StatelessWidget {
-  // static String id = 'AdminDashboard';
-
-  final ProductService _productService = ProductService();
-
-  AdminDashboard({super.key});
+  const AdminDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text("Admin Dashboard"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                AppRoutes.addProduct,
-              ); // لو حابب تفتح AddProductPage، ضيف روت خاص بيها بعدين
-            },
-          ),
-        ],
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('products').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text("❌ Error loading products"));
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
+    final AuthService authService = AuthService();
 
-          final products =
-              snapshot.data!.docs
-                  .map((doc) => ProductModel.fromDoc(doc))
-                  .toList();
-
-          if (products.isEmpty) {
-            return const Center(child: Text("No products yet"));
-          }
-
-          return ListView.builder(
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              final product = products[index];
-              return ListTile(
-                title: Text(product.name),
-                subtitle: Text("Price: \$${product.price}"),
-                onTap: () {
-                  _showProductOptions(context, product);
-                },
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  void _showProductOptions(BuildContext context, ProductModel product) {
-    final rootContext = context; // نخزن context الأصلي للـ Scaffold
-
-    showDialog(
-      context: context,
-      builder:
-          (dialogContext) => AlertDialog(
-            title: Text(product.name),
-            content: const Text("Choose an action"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(dialogContext); // يقفل الـ Dialog
-                  Navigator.pushNamed(
-                    rootContext,
-                    AppRoutes.editProduct,
-                    arguments: product, // تمرير الـ ProductModel
-                  );
-                },
-                child: const Text("✏️ Edit"),
-              ),
-              TextButton(
-                onPressed: () async {
-                  Navigator.pop(dialogContext); // يقفل الـ Dialog
-                  await _productService.deleteProduct(product.id);
-
-                  // هنا نستخدم context الأصلي مش بتاع الـ Dialog
-                  ScaffoldMessenger.of(rootContext).showSnackBar(
-                    const SnackBar(content: Text("🗑️ Product deleted")),
-                  );
-                },
-                child: const Text(
-                  "🗑️ Delete",
-                  style: TextStyle(color: Colors.red),
+    return BlocProvider(
+      create: (_) => ProductCubit(ProductService())..fetchProducts(),
+      child: Scaffold(
+        appBar: CustomAppBar(title: 'Admin Dashboard'),
+        body: Column(
+          children: [
+            CustomSearchBar(
+              actionButton: Container(
+                width: 51,
+                height: 51,
+                margin: const EdgeInsets.symmetric(horizontal: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  border: Border.all(color: AppColors.primary, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: IconButton(
+                  onPressed: () async {
+                    final result = await Navigator.pushNamed(
+                      context,
+                      AppRoutes.addProduct,
+                    );
+                    if (result == true) {
+                      context.read<ProductCubit>().fetchProducts();
+                    }
+                  },
+                  icon: Icon(Icons.add_ic_call, color: AppColors.bg),
+                  iconSize: 30,
                 ),
               ),
-            ],
-          ),
+            ), // اربطها بالكيبوت
+            SizedBox(height: 6),
+            CustomCategory(),
+            ProductsGridAdmin(),
+          ],
+        ),
+      ),
     );
   }
 }

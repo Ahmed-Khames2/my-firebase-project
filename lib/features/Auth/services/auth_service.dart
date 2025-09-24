@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:my_firebase_app/core/helper/show_snack_bar.dart';
 import 'package:my_firebase_app/core/routes/app_routes.dart';
 
-
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -50,7 +49,7 @@ class AuthService {
           // لو مستخدم عادي
           Navigator.pushReplacementNamed(
             context,
-            AppRoutes.chat,
+            AppRoutes.productPage,
             arguments: email,
           );
         }
