@@ -1,5 +1,5 @@
 
-import 'package:my_firebase_app/consatnt.dart';
+import 'package:my_firebase_app/core/constant/consatnt.dart';
 
 class Message {
   final String message;

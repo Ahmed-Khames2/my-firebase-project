@@ -1,14 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:my_firebase_app/helper/show_snack_bar.dart';
-import 'package:my_firebase_app/features/admin/AdminDashboard.dart';
-import 'package:my_firebase_app/pages/chat_page.dart';
-import 'package:my_firebase_app/pages/login_page.dart';
+import 'package:my_firebase_app/core/helper/show_snack_bar.dart';
+import 'package:my_firebase_app/core/routes/app_routes.dart';
+
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -19,54 +14,58 @@ class AuthService {
     await _auth.signOut();
     Navigator.pushNamedAndRemoveUntil(
       context,
-      LoginPage.id, // الصفحة اللي هيروح لها بعد تسجيل الخروج
+      AppRoutes.login, // استخدم الروت المعرّف في ملف AppRoutes
       (Route<dynamic> route) => false, // امسح كل الصفحات القديمة
     );
   }
 
- // تسجيل دخول مع التحقق من الدور
-Future<void> loginUser({
-  required BuildContext context,
-  required String email,
-  required String password,
-}) async {
-  try {
-    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+  // تسجيل دخول مع التحقق من الدور
+  Future<void> loginUser({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    final user = userCredential.user;
+      final user = userCredential.user;
 
-    if (user != null && user.emailVerified) {
-      // جلب بيانات المستخدم من Firestore
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
+      if (user != null && user.emailVerified) {
+        // جلب بيانات المستخدم من Firestore
+        DocumentSnapshot userDoc =
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .get();
 
-      String role = userDoc['role'] ?? 'user';
+        String role = userDoc['role'] ?? 'user';
 
-      if (role == 'admin') {
-        // لو الأدمن
-        Navigator.pushReplacementNamed(context, AdminDashboard.id);
+        if (role == 'admin') {
+          // لو الأدمن
+          Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
+        } else {
+          // لو مستخدم عادي
+          Navigator.pushReplacementNamed(
+            context,
+            AppRoutes.chat,
+            arguments: email,
+          );
+        }
       } else {
-        // لو مستخدم عادي
-        Navigator.pushReplacementNamed(context, ChatPage.id, arguments: email);
+        // لو الإيميل مش متحقق
+        showSnackBar(context, 'Please verify your email first.');
+        await _auth.signOut();
       }
-    } else {
-      // لو الإيميل مش متحقق
-      showSnackBar(context, 'Please verify your email first.');
-      await _auth.signOut();
+    } on FirebaseAuthException catch (e) {
+      showSnackBar(context, e.message ?? 'Login error.');
+    } catch (e) {
+      showSnackBar(context, 'An unexpected error occurred: $e');
+      print('Login error: $e');
     }
-  } on FirebaseAuthException catch (e) {
-    showSnackBar(context, e.message ?? 'Login error.');
-  } catch (e) {
-    showSnackBar(context, 'An unexpected error occurred: $e');
-    print('Login error: $e');
   }
-}
-
 
   // تسجيل مستخدم جديد مع حفظ الاسم والصورة
   Future<void> registerUser({
@@ -94,7 +93,7 @@ Future<void> loginUser({
         });
 
         showSnackBar(context, 'Verification email sent! Check your inbox.');
-        Navigator.pushReplacementNamed(context, LoginPage.id);
+        Navigator.pushReplacementNamed(context, AppRoutes.login);
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_firebase_app/pages/models/product_model.dart';
+import 'package:my_firebase_app/core/models/product_model.dart';
 import 'package:uuid/uuid.dart';
-import '../../../services/product_service.dart';
+import '../service/product_service.dart';
 
 class AddProductPage extends StatefulWidget {
-  static String id = "AddProductPage";
 
   const AddProductPage({super.key});
 

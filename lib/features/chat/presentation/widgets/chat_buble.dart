@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_firebase_app/consatnt.dart';
-import 'package:my_firebase_app/models/message.dart';
+import 'package:my_firebase_app/core/constant/consatnt.dart';
+import 'package:my_firebase_app/features/chat/models/message.dart';
 
 class ChatBuble extends StatelessWidget {
   const ChatBuble({

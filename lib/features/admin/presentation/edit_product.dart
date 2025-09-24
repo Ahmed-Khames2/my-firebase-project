@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_firebase_app/pages/models/product_model.dart';
-import 'package:my_firebase_app/services/product_service.dart';
+import 'package:my_firebase_app/core/models/product_model.dart';
+import 'package:my_firebase_app/features/admin/service/product_service.dart';
 
 class EditProductPage extends StatefulWidget {
   final ProductModel product;

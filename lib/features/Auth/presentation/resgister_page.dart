@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:my_firebase_app/consatnt.dart';
-import 'package:my_firebase_app/helper/show_snack_bar.dart';
-import 'package:my_firebase_app/widgets/custom_button.dart';
-import 'package:my_firebase_app/widgets/custom_text_field.dart';
-import 'package:my_firebase_app/services/auth_service.dart';
+import 'package:my_firebase_app/core/constant/consatnt.dart';
+import 'package:my_firebase_app/features/chat/presentation/widgets/custom_button.dart';
+import 'package:my_firebase_app/features/chat/presentation/widgets/custom_text_field.dart';
+import 'package:my_firebase_app/features/Auth/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   RegisterPage({Key? key}) : super(key: key);

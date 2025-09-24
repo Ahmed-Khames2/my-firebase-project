@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_firebase_app/cubits/auth/auth_cubit.dart';
-import 'package:my_firebase_app/features/admin/AdminDashboard.dart';
-import 'package:my_firebase_app/pages/chat_page.dart';
-import 'package:my_firebase_app/pages/login_page.dart';
-import 'package:my_firebase_app/pages/resgister_page.dart';
+import 'package:my_firebase_app/core/routes/app_routes.dart';
+import 'package:my_firebase_app/features/Auth/cubit/auth_cubit.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -13,9 +10,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => AuthCubit()),
-      ],
+      providers: [BlocProvider(create: (_) => AuthCubit())],
       child: const ScholarChat(),
     ),
   );
@@ -27,13 +22,15 @@ class ScholarChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: {
-        LoginPage.id: (context) => LoginPage(),
-        RegisterPage.id: (context) => RegisterPage(),
-        ChatPage.id: (context) => ChatPage(),
-        AdminDashboard.id: (context) => AdminDashboard(),
-      },
-      initialRoute: LoginPage.id,
+      // routes: {
+      //   LoginPage.id: (context) => LoginPage(),
+      //   RegisterPage.id: (context) => RegisterPage(),
+      //   ChatPage.id: (context) => ChatPage(),
+      //   AdminDashboard.id: (context) => AdminDashboard(),
+      // },
+      // initialRoute: LoginPage.id,
+      onGenerateRoute: AppRoutes.generateRoute,
+      initialRoute: AppRoutes.login,
     );
   }
 }

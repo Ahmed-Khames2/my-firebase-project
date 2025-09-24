@@ -1,13 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:my_firebase_app/consatnt.dart';
-import 'package:my_firebase_app/helper/show_snack_bar.dart';
-import 'package:my_firebase_app/pages/resgister_page.dart';
-import 'package:my_firebase_app/services/auth_service.dart';
-import 'package:my_firebase_app/widgets/custom_button.dart';
-import 'package:my_firebase_app/widgets/custom_text_field.dart';
-import 'chat_page.dart';
+import 'package:my_firebase_app/core/constant/consatnt.dart';
+import 'package:my_firebase_app/core/helper/show_snack_bar.dart';
+import 'package:my_firebase_app/core/routes/app_routes.dart';
+import 'package:my_firebase_app/features/Auth/services/auth_service.dart';
+import 'package:my_firebase_app/features/chat/presentation/widgets/custom_button.dart';
+import 'package:my_firebase_app/features/chat/presentation/widgets/custom_text_field.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -152,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, RegisterPage.id);
+                        Navigator.pushNamed(context, AppRoutes.register);
                       },
                       child: Text(
                         '  Register',
