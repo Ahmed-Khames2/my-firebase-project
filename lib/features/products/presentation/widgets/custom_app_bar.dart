@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:my_firebase_app/core/theme/app_color.dart';
 import 'package:my_firebase_app/core/theme/styles.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
+class CustomAppBarProPage extends StatelessWidget
+    implements PreferredSizeWidget {
+  const CustomAppBarProPage({super.key});
 
   @override
   Widget build(BuildContext context) {

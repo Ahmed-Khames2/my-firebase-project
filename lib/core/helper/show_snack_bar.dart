@@ -1,4 +1,6 @@
 
+// ignore_for_file: use_build_context_synchronously
+
   import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_firebase_app/core/models/product_model.dart';
@@ -72,4 +74,21 @@ void showSnackBar(BuildContext context, String message) {
             ],
           ),
     );
+  }
+    /// 🎨 Helper لتحويل String → Color
+  Color getColorFromName(String color) {
+    switch (color.toLowerCase()) {
+      case "red":
+        return Colors.red;
+      case "blue":
+        return Colors.blue;
+      case "green":
+        return Colors.green;
+      case "black":
+        return Colors.black;
+      case "white":
+        return Colors.white;
+      default:
+        return AppColors.primary;
+    }
   }

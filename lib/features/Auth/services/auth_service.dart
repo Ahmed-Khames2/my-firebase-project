@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +64,7 @@ class AuthService {
       showSnackBar(context, e.message ?? 'Login error.');
     } catch (e) {
       showSnackBar(context, 'An unexpected error occurred: $e');
-      print('Login error: $e');
+      // print('Login error: $e');
     }
   }
 
@@ -102,7 +104,7 @@ class AuthService {
       }
     } catch (e) {
       showSnackBar(context, 'Unexpected error: $e');
-      print('Unexpected error: $e');
+      // print('Unexpected error: $e');
     }
   }
 

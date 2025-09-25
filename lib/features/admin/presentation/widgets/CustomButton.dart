@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:my_firebase_app/core/theme/app_color.dart';
 import 'package:my_firebase_app/core/theme/styles.dart';

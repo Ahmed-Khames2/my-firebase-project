@@ -1,209 +1,137 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:my_firebase_app/core/models/product_model.dart';
-import 'package:my_firebase_app/core/theme/app_color.dart';
-import 'package:my_firebase_app/core/theme/styles.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:my_firebase_app/features/products/presentation/widgets/add_to_cart_button.dart';
+import 'package:my_firebase_app/features/products/presentation/widgets/custom_app_bar_details_page.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ProductDetailsPage extends StatelessWidget {
+import '../../../core/models/product_model.dart';
+import '../../../core/theme/app_color.dart';
+import '../../../core/theme/styles.dart';
+
+// Widgets
+import 'widgets/product_slider.dart';
+import 'widgets/favorite_button.dart';
+import 'widgets/product_price.dart';
+import 'widgets/product_colors.dart';
+import 'widgets/product_sizes.dart';
+import 'widgets/product_reviews.dart';
+
+class ProductDetailsPage extends StatefulWidget {
   final ProductModel product;
 
   const ProductDetailsPage({super.key, required this.product});
 
   @override
+  State<ProductDetailsPage> createState() => _ProductDetailsPageState();
+}
+
+class _ProductDetailsPageState extends State<ProductDetailsPage> {
+  int selectedImage = 0;
+  String? selectedColor;
+  String? selectedSize;
+
+  @override
   Widget build(BuildContext context) {
+    final product = widget.product;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(product.name, style: AppStyles.body1Medium),
-        backgroundColor: AppColors.primary,
-      ),
+      appBar: CartAppBar(text: product.name),
       backgroundColor: AppColors.bg,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🖼️ صور المنتج (سلايدر)
-            SizedBox(
-              height: 280,
-              child: PageView.builder(
-                itemCount: product.images.isNotEmpty ? product.images.length : 1,
-                itemBuilder: (context, index) {
-                  final imageUrl = product.images.isNotEmpty
-                      ? product.images[index]
-                      : "https://via.placeholder.com/300";
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: CachedNetworkImage(
-                      imageUrl: imageUrl,
-                      height: 250,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Container(
-                          height: 250,
-                          width: double.infinity,
-                          color: Colors.white,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error, size: 50, color: Colors.red),
-                    ),
-                  );
-                },
-              ),
+            /// 🖼️ السلايدر
+            ProductSlider(
+              images: product.images,
+              selectedImage: selectedImage,
+              onPageChanged: (index) {
+                setState(() => selectedImage = index);
+              },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
-            // 📝 اسم المنتج
-            Text(
-              product.name,
-              style: AppStyles.body1SemiBold.copyWith(fontSize: 22),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    product.name,
+                    style: AppStyles.header1.copyWith(fontSize: 20),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
 
-            // 💰 السعر والخصم
+            ProductPrice(
+              price: product.price,
+              discountPrice: product.discountPrice,
+            ),
+            const SizedBox(height: 16),
+
             Row(
               children: [
-                Text(
-                  "\$${product.price.toStringAsFixed(2)}",
-                  style: AppStyles.body1SemiBold.copyWith(
-                    fontSize: 20,
-                    color: AppColors.primary,
-                  ),
+                const Icon(
+                  Icons.category_outlined,
+                  size: 18,
+                  color: Colors.grey,
                 ),
-                if (product.discountPrice != null) ...[
-                  const SizedBox(width: 12),
-                  Text(
-                    "\$${product.discountPrice!.toStringAsFixed(2)}",
-                    style: AppStyles.body1Regular.copyWith(
-                      fontSize: 16,
-                      color: Colors.grey,
-                      decoration: TextDecoration.lineThrough,
-                    ),
-                  ),
-                ],
+                const SizedBox(width: 6),
+                Text(product.category, style: AppStyles.body1Regular),
+                const Spacer(),
+                const Icon(Icons.star_rounded, size: 18, color: Colors.amber),
+                const SizedBox(width: 4),
+                Text(product.rating, style: AppStyles.body1Regular),
               ],
             ),
             const SizedBox(height: 16),
 
-            // 🖊️ الوصف
+            /// الوصف
+            Text("Description", style: AppStyles.header1),
+            const SizedBox(height: 8),
             Text(
               product.description.isNotEmpty
                   ? product.description
                   : "No description available",
-              style: AppStyles.body1Regular.copyWith(fontSize: 16),
+              style: AppStyles.body1Regular.copyWith(height: 1.6),
             ),
             const SizedBox(height: 20),
 
-            // 🎨 الألوان
-            if (product.colors.isNotEmpty) ...[
-              Text("Available Colors:", style: AppStyles.body1SemiBold),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: product.colors.map((color) {
-                  return CircleAvatar(
-                    radius: 16,
-                    backgroundColor: _getColorFromName(color),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 20),
-            ],
-
-            // 📏 المقاسات
-            if (product.sizes.isNotEmpty) ...[
-              Text("Available Sizes:", style: AppStyles.body1SemiBold),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: product.sizes.map((size) {
-                  return Chip(
-                    label: Text(size),
-                    backgroundColor: AppColors.primary.withOpacity(0.1),
-                    labelStyle:
-                        AppStyles.body2Medium.copyWith(color: AppColors.primary),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 20),
-            ],
-
-            // ⭐ التقييم
-            if (product.rating.isNotEmpty) ...[
-              Row(
-                children: [
-                  const Icon(Icons.star, color: Colors.amber, size: 20),
-                  const SizedBox(width: 4),
-                  Text(product.rating,
-                      style: AppStyles.body1Regular.copyWith(fontSize: 16)),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
-
-            // 💬 المراجعات
-            if (product.reviews.isNotEmpty) ...[
-              Text("Customer Reviews:", style: AppStyles.body1SemiBold),
-              const SizedBox(height: 8),
-              Column(
-                children: product.reviews.map((review) {
-                  return ListTile(
-                    leading: const Icon(Icons.person, color: AppColors.primary),
-                    title: Text(review, style: AppStyles.body2Regular),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 20),
-            ],
-
-            // 🛒 زر إضافة للسلة
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  // TODO: Add to cart logic
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("${product.name} added to cart")),
-                  );
+            /// الألوان
+            if (product.colors.isNotEmpty)
+              ProductColors(
+                colors: product.colors,
+                selectedColor: selectedColor,
+                onSelect: (color) {
+                  setState(() => selectedColor = color);
                 },
-                child: Text(
-                  "Add to Cart",
-                  style: AppStyles.button,
-                ),
               ),
-            ),
+
+            /// المقاسات
+            if (product.sizes.isNotEmpty)
+              ProductSizes(
+                sizes: product.sizes,
+                selectedSize: selectedSize,
+                onSelect: (size) {
+                  setState(() => selectedSize = size);
+                },
+              ),
+
+            /// المراجعات
+            if (product.reviews.isNotEmpty)
+              ProductReviews(reviews: product.reviews),
           ],
         ),
       ),
-    );
-  }
 
-  /// Helper لتحويل اسم اللون لـ Color (بسيط)
-  Color _getColorFromName(String color) {
-    switch (color.toLowerCase()) {
-      case "red":
-        return Colors.red;
-      case "blue":
-        return Colors.blue;
-      case "green":
-        return Colors.green;
-      case "black":
-        return Colors.black;
-      case "white":
-        return Colors.white;
-      default:
-        return AppColors.primary;
-    }
+      /// 🛒 زر أسفل الشاشة
+      bottomNavigationBar: AddToCartButton(
+        product: product,
+        selectedSize: selectedSize,
+        selectedColor: selectedColor,
+      ),
+    );
   }
 }

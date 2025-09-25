@@ -15,8 +15,9 @@ class ProductsGrid extends StatelessWidget {
     return Expanded(
       child: BlocBuilder<ProductCubit, ProductState>(
         builder: (context, state) {
-          if (state is ProductLoading)
+          if (state is ProductLoading) {
             return const Center(child: CircularProgressIndicator());
+          }
           if (state is ProductError) return Center(child: Text(state.error));
 
           final products = state is ProductLoaded ? state.filteredProducts : [];

@@ -13,7 +13,7 @@ class ProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: CustomAppBarProPage(),
       backgroundColor: AppColors.bg,
       body: Column(
         children: [

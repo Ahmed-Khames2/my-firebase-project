@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_firebase_app/core/models/product_model.dart';
@@ -14,8 +16,9 @@ class ProductsGridAdmin extends StatelessWidget {
     return Expanded(
       child: BlocBuilder<ProductCubit, ProductState>(
         builder: (context, state) {
-          if (state is ProductLoading)
+          if (state is ProductLoading) {
             return const Center(child: CircularProgressIndicator());
+          }
           if (state is ProductError) return Center(child: Text(state.error));
 
           final products = state is ProductLoaded ? state.filteredProducts : [];

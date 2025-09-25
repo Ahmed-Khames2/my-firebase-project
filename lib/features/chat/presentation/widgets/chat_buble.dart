@@ -4,9 +4,9 @@ import 'package:my_firebase_app/features/chat/models/message.dart';
 
 class ChatBuble extends StatelessWidget {
   const ChatBuble({
-    Key? key,
+    super.key,
     required this.message,
-  }) : super(key: key);
+  });
 
   final Message message;
   @override
@@ -37,9 +37,9 @@ class ChatBuble extends StatelessWidget {
 
 class ChatBubleForFriend extends StatelessWidget {
   const ChatBubleForFriend({
-    Key? key,
+    super.key,
     required this.message,
-  }) : super(key: key);
+  });
 
   final Message message;
   @override

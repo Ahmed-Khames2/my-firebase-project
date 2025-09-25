@@ -6,7 +6,7 @@ import 'package:my_firebase_app/features/chat/presentation/widgets/custom_text_f
 import 'package:my_firebase_app/features/Auth/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
-  RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({super.key});
 
   static String id = 'RegisterPage';
 

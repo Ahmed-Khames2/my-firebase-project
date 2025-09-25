@@ -4,12 +4,7 @@ import 'package:my_firebase_app/features/Auth/presentation/resgister_page.dart';
 import 'package:my_firebase_app/features/admin/presentation/AdminDashboard.dart';
 import 'package:my_firebase_app/features/admin/presentation/add_product_page.dart';
 import 'package:my_firebase_app/features/admin/presentation/edit_product.dart';
-import 'package:my_firebase_app/features/chat/presentation/pages/chat_page.dart';
 import 'package:my_firebase_app/features/layout/BottomNavLayout.dart';
-// import 'package:my_firebase_app/features/auth/login_page.dart';
-// import 'package:my_firebase_app/features/auth/register_page.dart';
-// import 'package:my_firebase_app/features/chat/chat_page.dart';
-// import 'package:my_firebase_app/features/admin/admin_dashboard.dart';
 import 'package:my_firebase_app/core/models/product_model.dart';
 import 'package:my_firebase_app/features/products/presentation/product_details_page.dart';
 import 'package:my_firebase_app/features/products/presentation/products_page.dart';
@@ -55,16 +50,6 @@ class AppRoutes {
           );
         }
         return _errorRoute("EditProductPage needs ProductModel as arguments.");
-
-      // case productDetails:
-      //   final args = settings.arguments;
-      //   if (args is ProductModel) {
-      //     return MaterialPageRoute(
-      //       builder: (_) => ProductDetailsPage(product: args),
-      //     );
-      //   }
-      //   return _errorRoute("ProductDetails needs ProductModel as arguments.");
-
       default:
         return _errorRoute("Route not found: ${settings.name}");
     }

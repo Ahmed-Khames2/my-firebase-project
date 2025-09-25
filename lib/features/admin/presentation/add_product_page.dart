@@ -27,6 +27,23 @@ class _AddProductPageState extends State<AddProductPage> {
   final _sizesController = TextEditingController();
   String _selectedCategory = Categories.all[1]; // افتراضي "Electronics"
 
+  // 🖼️ list of image URL controllers
+  final List<TextEditingController> _imageControllers = [TextEditingController()];
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descController.dispose();
+    _priceController.dispose();
+    _discountPriceController.dispose();
+    _colorsController.dispose();
+    _sizesController.dispose();
+    for (var c in _imageControllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -34,30 +51,22 @@ class _AddProductPageState extends State<AddProductPage> {
       child: BlocConsumer<ProductCubit, ProductState>(
         listener: (context, state) {
           if (state is ProductOperationSuccess) {
-            // تفريغ كل الفيلدات
             _nameController.clear();
             _descController.clear();
             _priceController.clear();
             _discountPriceController.clear();
             _colorsController.clear();
             _sizesController.clear();
+            for (var c in _imageControllers) c.clear();
 
-            // إعادة اختيار الفئة الافتراضية
             setState(() => _selectedCategory = Categories.all[1]);
 
             showCustomSnackBar(context, "✅ ${state.message}");
-
-            // تحديث المنتجات
             context.read<ProductCubit>().fetchProducts();
           } else if (state is ProductFailure) {
-            showCustomSnackBar(
-              context,
-              "❌ Error: ${state.error}",
-              success: false,
-            );
+            showCustomSnackBar(context, "❌ Error: ${state.error}", success: false);
           }
         },
-
         builder: (context, state) {
           final isLoading = state is ProductLoading;
 
@@ -77,8 +86,7 @@ class _AddProductPageState extends State<AddProductPage> {
                     InputField(
                       controller: _descController,
                       label: "Description",
-                      validator:
-                          (val) => val!.isEmpty ? "Enter description" : null,
+                      validator: (val) => val!.isEmpty ? "Enter description" : null,
                     ),
                     InputField(
                       controller: _priceController,
@@ -97,14 +105,12 @@ class _AddProductPageState extends State<AddProductPage> {
                         labelText: "Category",
                         border: OutlineInputBorder(),
                       ),
-                      items:
-                          Categories.all
-                              .skip(1) // skip "All"
-                              .map(
-                                (c) =>
-                                    DropdownMenuItem(value: c, child: Text(c)),
-                              )
-                              .toList(),
+                      items: Categories.all
+                          .skip(1) // skip "All"
+                          .map(
+                            (c) => DropdownMenuItem(value: c, child: Text(c)),
+                          )
+                          .toList(),
                       onChanged: (val) {
                         if (val != null) {
                           setState(() => _selectedCategory = val);
@@ -121,45 +127,70 @@ class _AddProductPageState extends State<AddProductPage> {
                       label: "Sizes (comma separated)",
                     ),
                     const SizedBox(height: 20),
+
+                    const Text("Image URLs:", style: TextStyle(fontWeight: FontWeight.bold)),
+
+                    // 🖼️ عرض كل TextField للصور
+                    ..._imageControllers.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final controller = entry.value;
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: InputField(
+                              controller: controller,
+                              label: "Image URL ${index + 1}",
+                              validator: (val) => val!.isEmpty ? "Enter image URL" : null,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              if (_imageControllers.length > 1) {
+                                setState(() => _imageControllers.removeAt(index));
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    }),
+
+                    TextButton.icon(
+                      onPressed: () {
+                        setState(() => _imageControllers.add(TextEditingController()));
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text("Add another image"),
+                    ),
+
+                    const SizedBox(height: 20),
                     CustomButton(
-                      onPressed:
-                          isLoading
-                              ? () {}
-                              : () {
-                                if (!_formKey.currentState!.validate()) return;
+                      onPressed: isLoading
+                          ? () {}
+                          : () {
+                              if (!_formKey.currentState!.validate()) return;
 
-                                final product = ProductModel(
-                                  id: const Uuid().v4(),
-                                  name: _nameController.text.trim(),
-                                  description: _descController.text.trim(),
-                                  price:
-                                      double.tryParse(_priceController.text) ??
-                                      0,
-                                  discountPrice: double.tryParse(
-                                    _discountPriceController.text,
-                                  ),
-                                  category: _selectedCategory,
-                                  colors:
-                                      _colorsController.text
-                                          .split(',')
-                                          .map((e) => e.trim())
-                                          .toList(),
-                                  sizes:
-                                      _sizesController.text
-                                          .split(',')
-                                          .map((e) => e.trim())
-                                          .toList(),
-                                  images: [],
-                                  rating: '',
-                                  reviews: [],
-                                  createdAt: DateTime.now(),
-                                  updatedAt: DateTime.now(),
-                                );
+                              final product = ProductModel(
+                                id: const Uuid().v4(),
+                                name: _nameController.text.trim(),
+                                description: _descController.text.trim(),
+                                price: double.tryParse(_priceController.text) ?? 0,
+                                discountPrice: double.tryParse(_discountPriceController.text),
+                                category: _selectedCategory,
+                                colors: _colorsController.text.split(',').map((e) => e.trim()).toList(),
+                                sizes: _sizesController.text.split(',').map((e) => e.trim()).toList(),
+                                images: _imageControllers
+                                    .map((c) => c.text.trim())
+                                    .where((url) => url.isNotEmpty)
+                                    .toList(),
+                                rating: '',
+                                reviews: [],
+                                createdAt: DateTime.now(),
+                                updatedAt: DateTime.now(),
+                              );
 
-                                context.read<ProductCubit>().addProduct(
-                                  product,
-                                );
-                              },
+                              context.read<ProductCubit>().addProduct(product);
+                            },
                       text: "Save Product",
                       isLoading: isLoading,
                     ),

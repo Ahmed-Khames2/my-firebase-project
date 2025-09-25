@@ -8,7 +8,8 @@ import 'package:my_firebase_app/features/chat/presentation/widgets/custom_button
 import 'package:my_firebase_app/features/chat/presentation/widgets/custom_text_field.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key}) : super(key: key);
+  // ignore: use_super_parameters
+  const LoginPage({Key? key}) : super(key: key);
   static String id = 'login page';
 
   @override
