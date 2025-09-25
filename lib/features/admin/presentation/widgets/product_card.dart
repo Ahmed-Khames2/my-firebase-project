@@ -87,7 +87,9 @@ class ProductCardAdmin extends StatelessWidget {
                   const Icon(Icons.star_rounded, size: 18, color: Colors.amber),
                   const SizedBox(width: 4),
                   Text(
-                    product.rating.isNotEmpty ? product.rating : '0.0',
+                    product.rating > 0
+                        ? product.rating.toStringAsFixed(1)
+                        : '0.0',
                     style: AppStyles.body1Regular,
                   ),
                 ],

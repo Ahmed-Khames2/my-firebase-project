@@ -215,8 +215,8 @@ class _AddProductPageState extends State<AddProductPage> {
                                           .map((c) => c.text.trim())
                                           .where((url) => url.isNotEmpty)
                                           .toList(),
-                                  rating: '',
-                                  reviewsCount: [],
+                                  rating: 0,
+                                  reviewsCount: 0,
                                   createdAt: DateTime.now(),
                                   updatedAt: DateTime.now(),
                                 );

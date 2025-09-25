@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductModel {
@@ -12,13 +11,13 @@ class ProductModel {
   final List<String> colors;
   final List<String> sizes;
   final List<String> images;
-  final String rating;
-  final List<String> reviewsCount;
+  final double rating; // ⭐ متوسط التقييم
+  final int reviewsCount; // ⭐ عدد الريفيوهات
   final DateTime createdAt;
   final DateTime updatedAt;
 
   ProductModel({
-    this.id = '', // ⭐ بقى اختياري، بيتجاب من Firestore
+    this.id = '',
     required this.name,
     required this.description,
     required this.price,
@@ -27,13 +26,12 @@ class ProductModel {
     required this.colors,
     required this.sizes,
     required this.images,
-    this.rating = '',
-    this.reviewsCount = const [],
+    this.rating = 0.0,
+    this.reviewsCount = 0,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  // 🔄 تحويل الموديل إلى Map (من غير id)
   Map<String, dynamic> toMap() {
     return {
       'name': name,
@@ -45,17 +43,16 @@ class ProductModel {
       'sizes': sizes,
       'images': images,
       'rating': rating,
-      'reviews': reviewsCount,
+      'reviewsCount': reviewsCount,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
-  // 🔄 إنشاء موديل من DocumentSnapshot
   factory ProductModel.fromDoc(DocumentSnapshot doc) {
     final map = doc.data() as Map<String, dynamic>;
     return ProductModel(
-      id: doc.id, // ⭐ id من Firestore
+      id: doc.id,
       name: map['name']?.toString() ?? '',
       description: map['description']?.toString() ?? '',
       price: (map['price'] ?? 0).toDouble(),
@@ -77,12 +74,8 @@ class ProductModel {
               ?.map((e) => e.toString())
               .toList() ??
           [],
-      rating: map['rating']?.toString() ?? '',
-      reviewsCount:
-          (map['reviews'] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          [],
+      rating: (map['rating'] ?? 0).toDouble(),
+      reviewsCount: (map['reviewsCount'] ?? 0) as int,
       createdAt:
           DateTime.tryParse(map['createdAt']?.toString() ?? '') ??
           DateTime.now(),
@@ -92,7 +85,6 @@ class ProductModel {
     );
   }
 
-  // 🔄 copyWith
   ProductModel copyWith({
     String? id,
     String? name,
@@ -103,8 +95,8 @@ class ProductModel {
     List<String>? colors,
     List<String>? sizes,
     List<String>? images,
-    String? rating,
-    List<String>? reviews,
+    double? rating,
+    int? reviewsCount,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -119,7 +111,7 @@ class ProductModel {
       sizes: sizes ?? this.sizes,
       images: images ?? this.images,
       rating: rating ?? this.rating,
-      reviewsCount: reviews ?? this.reviewsCount,
+      reviewsCount: reviewsCount ?? this.reviewsCount,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -132,7 +124,6 @@ class ProductModel {
   }
 
   String toJson() => jsonEncode(toMapWithId());
-
   factory ProductModel.fromJson(Map<String, dynamic> map) {
     return ProductModel(
       id: map['id'] ?? '',
@@ -147,8 +138,14 @@ class ProductModel {
       colors: List<String>.from(map['colors'] ?? []),
       sizes: List<String>.from(map['sizes'] ?? []),
       images: List<String>.from(map['images'] ?? []),
-      rating: map['rating'] ?? '',
-      reviewsCount: List<String>.from(map['reviews'] ?? []),
+      rating:
+          map['rating'] != null
+              ? double.tryParse(map['rating'].toString()) ?? 0.0
+              : 0.0,
+      reviewsCount:
+          (map['reviewsCount'] is int)
+              ? map['reviewsCount']
+              : int.tryParse(map['reviewsCount']?.toString() ?? '0') ?? 0,
       createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(map['updatedAt'] ?? '') ?? DateTime.now(),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_firebase_app/features/products/presentation/widgets/add_to_cart_button.dart';
 import 'package:my_firebase_app/features/products/presentation/widgets/custom_app_bar_details_page.dart';
+import 'package:my_firebase_app/features/reviews/presentation/reviews_page.dart';
 import '../../../core/models/product_model.dart';
 import '../../../core/theme/app_color.dart';
 import '../../../core/theme/styles.dart';
@@ -66,6 +67,24 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             ),
             const SizedBox(height: 16),
 
+            // Row(
+            //   children: [
+            //     const Icon(
+            //       Icons.category_outlined,
+            //       size: 18,
+            //       color: Colors.grey,
+            //     ),
+            //     const SizedBox(width: 6),
+            //     Text(product.category, style: AppStyles.body1Regular),
+            //     const Spacer(),
+            //     const Icon(Icons.star_rounded, size: 18, color: Colors.amber),
+            //     const SizedBox(width: 4),
+            //     Text(
+            //       product.rating.toStringAsFixed(1),
+            //       style: AppStyles.body1Regular,
+            //     ),
+            //   ],
+            // ),
             Row(
               children: [
                 const Icon(
@@ -76,11 +95,39 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 const SizedBox(width: 6),
                 Text(product.category, style: AppStyles.body1Regular),
                 const Spacer(),
-                const Icon(Icons.star_rounded, size: 18, color: Colors.amber),
-                const SizedBox(width: 4),
-                Text(product.rating, style: AppStyles.body1Regular),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => ProductReviewsPage(productId: product.id),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.star_rounded,
+                        size: 18,
+                        color: Colors.amber,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        product.rating.toStringAsFixed(1),
+                        style: AppStyles.body1Regular,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        "(${product.reviewsCount})",
+                        style: AppStyles.body1Regular,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
+
             const SizedBox(height: 16),
 
             /// الوصف
@@ -115,8 +162,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               ),
 
             /// المراجعات
-            if (product.reviewsCount.isNotEmpty)
-              ProductReviews(reviews: product.reviewsCount),
+            // if (product.reviewsCount.isNotEmpty)
+            //   ProductReviews(reviews: product.reviewsCount),
           ],
         ),
       ),
