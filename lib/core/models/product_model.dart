@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductModel {
@@ -117,4 +119,33 @@ class ProductModel {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+    Map<String, dynamic> toMapWithId() {
+    final data = toMap();
+    data['id'] = id;
+    return data;
+  }
+
+  String toJson() => jsonEncode(toMapWithId());
+
+  factory ProductModel.fromJson(Map<String, dynamic> map) {
+    return ProductModel(
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      description: map['description'] ?? '',
+      price: (map['price'] ?? 0).toDouble(),
+      discountPrice: map['discountPrice'] != null
+          ? (map['discountPrice'] as num).toDouble()
+          : null,
+      category: map['category'] ?? '',
+      colors: List<String>.from(map['colors'] ?? []),
+      sizes: List<String>.from(map['sizes'] ?? []),
+      images: List<String>.from(map['images'] ?? []),
+      rating: map['rating'] ?? '',
+      reviews: List<String>.from(map['reviews'] ?? []),
+      createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(map['updatedAt'] ?? '') ?? DateTime.now(),
+    );
+  }
+
 }

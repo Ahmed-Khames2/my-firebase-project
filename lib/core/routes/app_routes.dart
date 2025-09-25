@@ -4,6 +4,7 @@ import 'package:my_firebase_app/features/Auth/presentation/resgister_page.dart';
 import 'package:my_firebase_app/features/admin/presentation/AdminDashboard.dart';
 import 'package:my_firebase_app/features/admin/presentation/add_product_page.dart';
 import 'package:my_firebase_app/features/admin/presentation/edit_product.dart';
+import 'package:my_firebase_app/features/favorites/presentation/pages/favorit_page.dart';
 import 'package:my_firebase_app/features/layout/BottomNavLayout.dart';
 import 'package:my_firebase_app/core/models/product_model.dart';
 import 'package:my_firebase_app/features/products/presentation/product_details_page.dart';
@@ -18,6 +19,7 @@ class AppRoutes {
   static const String productDetails = '/productDetails';
   static const String addProduct = "/addProduct";
   static const String editProduct = "/editProduct";
+  static const String favoritesPage = "/FavoritesPage";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -28,7 +30,9 @@ class AppRoutes {
       case register:
         return MaterialPageRoute(builder: (_) => RegisterPage());
       case productPage:
-        return MaterialPageRoute(builder: (_) => ProductsPage());
+        return MaterialPageRoute(builder: (_) => ProductsPage());     
+         case favoritesPage:
+        return MaterialPageRoute(builder: (_) => FavoritesPage());
       case adminDashboard:
         return MaterialPageRoute(builder: (_) => AdminDashboard());
       case productDetails:

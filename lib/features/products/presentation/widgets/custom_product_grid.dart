@@ -4,6 +4,7 @@ import 'package:my_firebase_app/core/models/product_model.dart';
 import 'package:my_firebase_app/features/admin/cubits/admin_cubit/admin_cubit.dart';
 import 'package:my_firebase_app/features/admin/cubits/admin_cubit/admin_state.dart';
 import 'package:my_firebase_app/features/admin/presentation/widgets/product_card.dart';
+import 'package:my_firebase_app/features/products/presentation/widgets/product_card.dart';
 
 class ProductsGrid extends StatelessWidget {
   final void Function(ProductModel product) onTap; // مطلوب وبيستقبل المنتج نفسه

@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_firebase_app/core/models/product_model.dart';
+import 'package:my_firebase_app/features/favorites/presentation/cubit/favorite_cubit.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/theme/app_color.dart';
 
@@ -7,12 +10,14 @@ class ProductSlider extends StatelessWidget {
   final List<String> images;
   final int selectedImage;
   final ValueChanged<int> onPageChanged;
+    final ProductModel product; // ✅ ضفنا المنتج
+
 
   const ProductSlider({
     super.key,
     required this.images,
     required this.selectedImage,
-    required this.onPageChanged,
+    required this.onPageChanged, required this.product,
   });
 
   @override
@@ -42,6 +47,29 @@ class ProductSlider extends StatelessWidget {
                 ),
               );
             },
+          ),
+            /// ✅ أيقونة المفضلة فوق الصور
+          Positioned(
+            top: 12,
+            right: 12,
+            child: BlocBuilder<FavoriteCubit, List<ProductModel>>(
+              builder: (context, favorites) {
+                final isFav = favorites.any((p) => p.id == product.id);
+
+                return GestureDetector(
+                  onTap: () {
+                    context.read<FavoriteCubit>().toggleFavorite(product);
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white70,
+                    child: Icon(
+                      isFav ? Icons.favorite : Icons.favorite_border,
+                      color: isFav ? Colors.red : Colors.black54,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
           if (images.length > 1)
             Positioned(

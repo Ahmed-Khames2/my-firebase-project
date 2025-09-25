@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:my_firebase_app/features/products/presentation/widgets/add_to_cart_button.dart';
 import 'package:my_firebase_app/features/products/presentation/widgets/custom_app_bar_details_page.dart';
-import 'package:shimmer/shimmer.dart';
-
 import '../../../core/models/product_model.dart';
 import '../../../core/theme/app_color.dart';
 import '../../../core/theme/styles.dart';
-
-// Widgets
 import 'widgets/product_slider.dart';
-import 'widgets/favorite_button.dart';
 import 'widgets/product_price.dart';
 import 'widgets/product_colors.dart';
 import 'widgets/product_sizes.dart';
@@ -49,6 +43,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               onPageChanged: (index) {
                 setState(() => selectedImage = index);
               },
+              product: product,
             ),
             const SizedBox(height: 20),
 

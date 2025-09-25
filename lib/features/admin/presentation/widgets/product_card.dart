@@ -7,11 +7,11 @@ import 'package:my_firebase_app/core/theme/app_color.dart';
 import 'package:my_firebase_app/core/theme/styles.dart';
 import 'package:my_firebase_app/core/models/product_model.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCardAdmin extends StatelessWidget {
   final ProductModel product;
   final VoidCallback? onTap;
 
-  const ProductCard({super.key, required this.product, this.onTap});
+  const ProductCardAdmin({super.key, required this.product, this.onTap});
 
   @override
   Widget build(BuildContext context) {

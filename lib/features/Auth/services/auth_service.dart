@@ -51,7 +51,7 @@ class AuthService {
           // لو مستخدم عادي
           Navigator.pushReplacementNamed(
             context,
-            AppRoutes.productPage,
+            AppRoutes.layout,
             arguments: email,
           );
         }

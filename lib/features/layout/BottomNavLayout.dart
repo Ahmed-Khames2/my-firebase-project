@@ -3,6 +3,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:my_firebase_app/core/theme/app_color.dart';
+import 'package:my_firebase_app/features/favorites/presentation/pages/favorit_page.dart';
 import 'package:my_firebase_app/features/products/presentation/products_page.dart';
 
 class BottomNavLayout extends StatefulWidget {
@@ -17,7 +18,7 @@ class _BottomNavLayoutState extends State<BottomNavLayout> {
 
   final List<Widget> _pages = const [
     ProductsPage(),
-    // FavoritesPage(),
+    FavoritesPage(),
     // CartPage(),
   ];
 

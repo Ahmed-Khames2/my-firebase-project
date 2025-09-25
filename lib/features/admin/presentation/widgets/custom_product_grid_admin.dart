@@ -35,7 +35,7 @@ class ProductsGridAdmin extends StatelessWidget {
             itemCount: products.length,
             itemBuilder: (context, index) {
               final p = products[index];
-              return ProductCard(
+              return ProductCardAdmin(
                 product: p,
                 onTap: () => showProductOptions(context, p),
               );
