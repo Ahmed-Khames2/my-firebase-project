@@ -5,6 +5,7 @@ import 'package:my_firebase_app/core/routes/app_routes.dart';
 import 'package:my_firebase_app/features/Auth/cubit/auth_cubit.dart';
 import 'package:my_firebase_app/features/admin/cubits/admin_cubit/admin_cubit.dart';
 import 'package:my_firebase_app/features/admin/service/product_service.dart';
+import 'package:my_firebase_app/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:my_firebase_app/features/favorites/presentation/cubit/favorite_cubit.dart';
 import 'firebase_options.dart';
 
@@ -24,6 +25,9 @@ void main() async {
       value: favCubit,
       child: const MyApp(),
     ),
+     BlocProvider<CartCubit>(
+          create: (context) => CartCubit(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRoutes.generateRoute,
-      initialRoute: AppRoutes.login,
+      initialRoute: AppRoutes.layout,
     );
   }
 }

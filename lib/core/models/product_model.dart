@@ -13,7 +13,7 @@ class ProductModel {
   final List<String> sizes;
   final List<String> images;
   final String rating;
-  final List<String> reviews;
+  final List<String> reviewsCount;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -28,7 +28,7 @@ class ProductModel {
     required this.sizes,
     required this.images,
     this.rating = '',
-    this.reviews = const [],
+    this.reviewsCount = const [],
     required this.createdAt,
     required this.updatedAt,
   });
@@ -45,7 +45,7 @@ class ProductModel {
       'sizes': sizes,
       'images': images,
       'rating': rating,
-      'reviews': reviews,
+      'reviews': reviewsCount,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -59,30 +59,35 @@ class ProductModel {
       name: map['name']?.toString() ?? '',
       description: map['description']?.toString() ?? '',
       price: (map['price'] ?? 0).toDouble(),
-      discountPrice: map['discountPrice'] != null
-          ? (map['discountPrice'] as num).toDouble()
-          : null,
+      discountPrice:
+          map['discountPrice'] != null
+              ? (map['discountPrice'] as num).toDouble()
+              : null,
       category: map['category']?.toString() ?? '',
-      colors: (map['colors'] as List<dynamic>?)
+      colors:
+          (map['colors'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
-      sizes: (map['sizes'] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
+      sizes:
+          (map['sizes'] as List<dynamic>?)?.map((e) => e.toString()).toList() ??
           [],
-      images: (map['images'] as List<dynamic>?)
+      images:
+          (map['images'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
       rating: map['rating']?.toString() ?? '',
-      reviews: (map['reviews'] as List<dynamic>?)
+      reviewsCount:
+          (map['reviews'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
-      createdAt: DateTime.tryParse(map['createdAt']?.toString() ?? '') ??
+      createdAt:
+          DateTime.tryParse(map['createdAt']?.toString() ?? '') ??
           DateTime.now(),
-      updatedAt: DateTime.tryParse(map['updatedAt']?.toString() ?? '') ??
+      updatedAt:
+          DateTime.tryParse(map['updatedAt']?.toString() ?? '') ??
           DateTime.now(),
     );
   }
@@ -114,13 +119,13 @@ class ProductModel {
       sizes: sizes ?? this.sizes,
       images: images ?? this.images,
       rating: rating ?? this.rating,
-      reviews: reviews ?? this.reviews,
+      reviewsCount: reviews ?? this.reviewsCount,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
-    Map<String, dynamic> toMapWithId() {
+  Map<String, dynamic> toMapWithId() {
     final data = toMap();
     data['id'] = id;
     return data;
@@ -134,18 +139,18 @@ class ProductModel {
       name: map['name'] ?? '',
       description: map['description'] ?? '',
       price: (map['price'] ?? 0).toDouble(),
-      discountPrice: map['discountPrice'] != null
-          ? (map['discountPrice'] as num).toDouble()
-          : null,
+      discountPrice:
+          map['discountPrice'] != null
+              ? (map['discountPrice'] as num).toDouble()
+              : null,
       category: map['category'] ?? '',
       colors: List<String>.from(map['colors'] ?? []),
       sizes: List<String>.from(map['sizes'] ?? []),
       images: List<String>.from(map['images'] ?? []),
       rating: map['rating'] ?? '',
-      reviews: List<String>.from(map['reviews'] ?? []),
+      reviewsCount: List<String>.from(map['reviews'] ?? []),
       createdAt: DateTime.tryParse(map['createdAt'] ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(map['updatedAt'] ?? '') ?? DateTime.now(),
     );
   }
-
 }

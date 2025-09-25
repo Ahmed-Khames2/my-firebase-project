@@ -28,7 +28,9 @@ class _AddProductPageState extends State<AddProductPage> {
   String _selectedCategory = Categories.all[1]; // افتراضي "Electronics"
 
   // 🖼️ list of image URL controllers
-  final List<TextEditingController> _imageControllers = [TextEditingController()];
+  final List<TextEditingController> _imageControllers = [
+    TextEditingController(),
+  ];
 
   @override
   void dispose() {
@@ -64,7 +66,11 @@ class _AddProductPageState extends State<AddProductPage> {
             showCustomSnackBar(context, "✅ ${state.message}");
             context.read<ProductCubit>().fetchProducts();
           } else if (state is ProductFailure) {
-            showCustomSnackBar(context, "❌ Error: ${state.error}", success: false);
+            showCustomSnackBar(
+              context,
+              "❌ Error: ${state.error}",
+              success: false,
+            );
           }
         },
         builder: (context, state) {
@@ -86,7 +92,8 @@ class _AddProductPageState extends State<AddProductPage> {
                     InputField(
                       controller: _descController,
                       label: "Description",
-                      validator: (val) => val!.isEmpty ? "Enter description" : null,
+                      validator:
+                          (val) => val!.isEmpty ? "Enter description" : null,
                     ),
                     InputField(
                       controller: _priceController,
@@ -105,12 +112,14 @@ class _AddProductPageState extends State<AddProductPage> {
                         labelText: "Category",
                         border: OutlineInputBorder(),
                       ),
-                      items: Categories.all
-                          .skip(1) // skip "All"
-                          .map(
-                            (c) => DropdownMenuItem(value: c, child: Text(c)),
-                          )
-                          .toList(),
+                      items:
+                          Categories.all
+                              .skip(1) // skip "All"
+                              .map(
+                                (c) =>
+                                    DropdownMenuItem(value: c, child: Text(c)),
+                              )
+                              .toList(),
                       onChanged: (val) {
                         if (val != null) {
                           setState(() => _selectedCategory = val);
@@ -128,7 +137,10 @@ class _AddProductPageState extends State<AddProductPage> {
                     ),
                     const SizedBox(height: 20),
 
-                    const Text("Image URLs:", style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text(
+                      "Image URLs:",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
 
                     // 🖼️ عرض كل TextField للصور
                     ..._imageControllers.asMap().entries.map((entry) {
@@ -140,14 +152,18 @@ class _AddProductPageState extends State<AddProductPage> {
                             child: InputField(
                               controller: controller,
                               label: "Image URL ${index + 1}",
-                              validator: (val) => val!.isEmpty ? "Enter image URL" : null,
+                              validator:
+                                  (val) =>
+                                      val!.isEmpty ? "Enter image URL" : null,
                             ),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
                               if (_imageControllers.length > 1) {
-                                setState(() => _imageControllers.removeAt(index));
+                                setState(
+                                  () => _imageControllers.removeAt(index),
+                                );
                               }
                             },
                           ),
@@ -157,7 +173,9 @@ class _AddProductPageState extends State<AddProductPage> {
 
                     TextButton.icon(
                       onPressed: () {
-                        setState(() => _imageControllers.add(TextEditingController()));
+                        setState(
+                          () => _imageControllers.add(TextEditingController()),
+                        );
                       },
                       icon: const Icon(Icons.add),
                       label: const Text("Add another image"),
@@ -165,32 +183,48 @@ class _AddProductPageState extends State<AddProductPage> {
 
                     const SizedBox(height: 20),
                     CustomButton(
-                      onPressed: isLoading
-                          ? () {}
-                          : () {
-                              if (!_formKey.currentState!.validate()) return;
+                      onPressed:
+                          isLoading
+                              ? () {}
+                              : () {
+                                if (!_formKey.currentState!.validate()) return;
 
-                              final product = ProductModel(
-                                id: const Uuid().v4(),
-                                name: _nameController.text.trim(),
-                                description: _descController.text.trim(),
-                                price: double.tryParse(_priceController.text) ?? 0,
-                                discountPrice: double.tryParse(_discountPriceController.text),
-                                category: _selectedCategory,
-                                colors: _colorsController.text.split(',').map((e) => e.trim()).toList(),
-                                sizes: _sizesController.text.split(',').map((e) => e.trim()).toList(),
-                                images: _imageControllers
-                                    .map((c) => c.text.trim())
-                                    .where((url) => url.isNotEmpty)
-                                    .toList(),
-                                rating: '',
-                                reviews: [],
-                                createdAt: DateTime.now(),
-                                updatedAt: DateTime.now(),
-                              );
+                                final product = ProductModel(
+                                  id: const Uuid().v4(),
+                                  name: _nameController.text.trim(),
+                                  description: _descController.text.trim(),
+                                  price:
+                                      double.tryParse(_priceController.text) ??
+                                      0,
+                                  discountPrice: double.tryParse(
+                                    _discountPriceController.text,
+                                  ),
+                                  category: _selectedCategory,
+                                  colors:
+                                      _colorsController.text
+                                          .split(',')
+                                          .map((e) => e.trim())
+                                          .toList(),
+                                  sizes:
+                                      _sizesController.text
+                                          .split(',')
+                                          .map((e) => e.trim())
+                                          .toList(),
+                                  images:
+                                      _imageControllers
+                                          .map((c) => c.text.trim())
+                                          .where((url) => url.isNotEmpty)
+                                          .toList(),
+                                  rating: '',
+                                  reviewsCount: [],
+                                  createdAt: DateTime.now(),
+                                  updatedAt: DateTime.now(),
+                                );
 
-                              context.read<ProductCubit>().addProduct(product);
-                            },
+                                context.read<ProductCubit>().addProduct(
+                                  product,
+                                );
+                              },
                       text: "Save Product",
                       isLoading: isLoading,
                     ),

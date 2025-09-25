@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_firebase_app/core/models/product_model.dart';
 import 'package:my_firebase_app/core/theme/app_color.dart';
 import 'package:my_firebase_app/core/theme/styles.dart';
+import 'package:my_firebase_app/features/cart/presentation/cubit/cart_cubit.dart';
 
 class AddToCartButton extends StatelessWidget {
   final ProductModel product;
@@ -50,6 +52,10 @@ class AddToCartButton extends StatelessWidget {
                   );
                   return;
                 }
+
+                /// ✅ استدعاء الكيوبت
+                context.read<CartCubit>().addToCart(product);
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text("${product.name} added to cart ✅")),
                 );

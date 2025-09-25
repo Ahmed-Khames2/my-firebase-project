@@ -115,8 +115,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               ),
 
             /// المراجعات
-            if (product.reviews.isNotEmpty)
-              ProductReviews(reviews: product.reviews),
+            if (product.reviewsCount.isNotEmpty)
+              ProductReviews(reviews: product.reviewsCount),
           ],
         ),
       ),

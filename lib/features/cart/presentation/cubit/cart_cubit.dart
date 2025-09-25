@@ -1,74 +1,61 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../data/models/cart_item.dart';
+import 'package:my_firebase_app/core/models/product_model.dart';
 
-class CartCubit extends Cubit<List<CartItem>> {
-  CartCubit() : super([]) {
-    loadCart();
-  }
+class CartCubit extends Cubit<List<Map<String, dynamic>>> {
+  CartCubit() : super([]);
 
-  void addToCart(CartItem item) {
-    final index = state.indexWhere((i) => i.id == item.id);
-    if (index >= 0) {
-      state[index].quantity += item.quantity;
-      emit(List.from(state));
+  /// إضافة منتج للكارت
+  void addToCart(ProductModel product) {
+    final index = state.indexWhere((item) => item['product'].id == product.id);
+    if (index == -1) {
+      final newCart = List<Map<String, dynamic>>.from(state);
+      newCart.add({"product": product, "quantity": 1});
+      emit(newCart);
     } else {
-      emit([...state, item]);
-    }
-    saveCart();
-  }
-
-  void removeFromCart(int id) {
-    emit(state.where((i) => i.id != id).toList());
-    saveCart();
-  }
-
-  void increaseQuantity(int id) {
-    final index = state.indexWhere((i) => i.id == id);
-    if (index >= 0) {
-      state[index].quantity += 1;
-      emit(List.from(state));
-      saveCart();
+      increaseQuantity(product.id);
     }
   }
 
-  void decreaseQuantity(int id) {
-    final index = state.indexWhere((i) => i.id == id);
-    if (index >= 0 && state[index].quantity > 1) {
-      state[index].quantity -= 1;
-      emit(List.from(state));
-      saveCart();
+  /// إزالة منتج من الكارت
+  void removeFromCart(String productId) {
+    final newCart = state.where((item) => item['product'].id != productId).toList();
+    emit(newCart);
+  }
+
+  /// زيادة الكمية
+  void increaseQuantity(String productId) {
+    final newCart = List<Map<String, dynamic>>.from(state);
+    final index = newCart.indexWhere((item) => item['product'].id == productId);
+    if (index != -1) {
+      newCart[index]['quantity']++;
+      emit(newCart);
     }
   }
 
-  double get total => state.fold(0, (sum, item) => sum + item.price * item.quantity);
-
-  Future<void> saveCart() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cartJson = state.map((e) => json.encode({
-          'id': e.id,
-          'title': e.title,
-          'thumbnail': e.thumbnail,
-          'price': e.price,
-          'quantity': e.quantity,
-        })).toList();
-    await prefs.setStringList('cart_items', cartJson);
+  /// تقليل الكمية
+  void decreaseQuantity(String productId) {
+    final newCart = List<Map<String, dynamic>>.from(state);
+    final index = newCart.indexWhere((item) => item['product'].id == productId);
+    if (index != -1 && newCart[index]['quantity'] > 1) {
+      newCart[index]['quantity']--;
+      emit(newCart);
+    } else {
+      removeFromCart(productId);
+    }
   }
 
-  Future<void> loadCart() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cartJson = prefs.getStringList('cart_items') ?? [];
-    final items = cartJson.map((e) {
-      final map = json.decode(e);
-      return CartItem(
-        id: map['id'],
-        title: map['title'],
-        thumbnail: map['thumbnail'],
-        price: map['price'],
-        quantity: map['quantity'],
-      );
-    }).toList();
-    emit(items);
+  /// حساب الإجمالي
+  double get total {
+    return state.fold(0, (sum, item) {
+      final product = item['product'] as ProductModel;
+      final quantity = item['quantity'] as int;
+      final price = product.discountPrice ?? product.price;
+      return sum + (price * quantity);
+    });
+  }
+
+  /// مسح الكارت
+  void clearCart() {
+    emit([]);
   }
 }
