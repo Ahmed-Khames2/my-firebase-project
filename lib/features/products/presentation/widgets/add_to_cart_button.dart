@@ -46,15 +46,17 @@ class AddToCartButton extends StatelessWidget {
               onPressed: () {
                 if (selectedSize == null || selectedColor == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Please select size & color"),
-                    ),
+                    const SnackBar(content: Text("Please select size & color")),
                   );
                   return;
                 }
 
                 /// ✅ استدعاء الكيوبت
-                context.read<CartCubit>().addToCart(product);
+                context.read<CartCubit>().addToCart(
+                  product,
+                  color: selectedColor,
+                  size: selectedSize,
+                );
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text("${product.name} added to cart ✅")),

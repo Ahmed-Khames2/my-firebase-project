@@ -150,4 +150,10 @@ class ProductModel {
       updatedAt: DateTime.tryParse(map['updatedAt'] ?? '') ?? DateTime.now(),
     );
   }
+  
+}
+extension ProductModelJson on ProductModel {
+  Map<String, dynamic> toJsonMap() {
+    return jsonDecode(toJson());
+  }
 }

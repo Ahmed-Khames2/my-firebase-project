@@ -7,17 +7,21 @@ import 'package:my_firebase_app/features/cart/presentation/cubit/cart_cubit.dart
 class CartItemWidget extends StatelessWidget {
   final ProductModel product;
   final int quantity;
+  final String? selectedColor;
+  final String? selectedSize;
 
   const CartItemWidget({
     super.key,
     required this.product,
     required this.quantity,
+    this.selectedColor,
+    this.selectedSize,
   });
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(product.id),
+      key: Key(product.id + (selectedColor ?? '') + (selectedSize ?? '')),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
@@ -26,7 +30,11 @@ class CartItemWidget extends StatelessWidget {
         child: const Icon(Icons.delete, color: Colors.white, size: 30),
       ),
       onDismissed: (_) {
-        context.read<CartCubit>().removeFromCart(product.id);
+        context.read<CartCubit>().removeFromCart(
+          product.id,
+          color: selectedColor,
+          size: selectedSize,
+        );
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text("${product.name} removed ❌")));
@@ -67,7 +75,7 @@ class CartItemWidget extends StatelessWidget {
             ),
             const SizedBox(width: 12),
 
-            /// اسم وسعر
+            /// اسم وسعر + اللون والمقاس
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,6 +91,12 @@ class CartItemWidget extends StatelessWidget {
                     "\$${(product.discountPrice ?? product.price).toStringAsFixed(2)}",
                     style: AppStyles.productPrice.copyWith(fontSize: 15),
                   ),
+                  // if (selectedColor != null)
+                  //   Text("Color: $selectedColor",
+                  //       style: const TextStyle(fontSize: 13)),
+                  // if (selectedSize != null)
+                  //   Text("Size: $selectedSize",
+                  //       style: const TextStyle(fontSize: 13)),
                 ],
               ),
             ),
@@ -94,6 +108,8 @@ class CartItemWidget extends StatelessWidget {
                   onPressed:
                       () => context.read<CartCubit>().decreaseQuantity(
                         product.id,
+                        color: selectedColor,
+                        size: selectedSize,
                       ),
                   icon: const Icon(Icons.remove_circle_outline, size: 22),
                 ),
@@ -108,6 +124,8 @@ class CartItemWidget extends StatelessWidget {
                   onPressed:
                       () => context.read<CartCubit>().increaseQuantity(
                         product.id,
+                        color: selectedColor,
+                        size: selectedSize,
                       ),
                   icon: const Icon(Icons.add_circle_outline, size: 22),
                 ),

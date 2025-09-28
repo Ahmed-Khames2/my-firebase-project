@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_firebase_app/core/models/product_model.dart';
-import 'package:my_firebase_app/core/theme/app_color.dart';
-import 'package:my_firebase_app/core/theme/styles.dart';
 import 'package:my_firebase_app/core/widgets/empty_widget.dart';
 import 'package:my_firebase_app/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:my_firebase_app/features/cart/presentation/widgets/CheckoutButtom.dart';
@@ -52,8 +50,15 @@ class CartPage extends StatelessWidget {
                     final item = cartItems[index];
                     final product = item['product'] as ProductModel;
                     final quantity = item['quantity'] as int;
+                    final color = item['selectedColor'] as String?;
+                    final size = item['selectedSize'] as String?;
 
-                    return CartItemWidget(product: product, quantity: quantity);
+                    return CartItemWidget(
+                      product: product,
+                      quantity: quantity,
+                      selectedColor: color,
+                      selectedSize: size,
+                    );
                   },
                 ),
               ),

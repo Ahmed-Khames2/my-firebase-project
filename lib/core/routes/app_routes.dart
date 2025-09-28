@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_firebase_app/features/Auth/presentation/login_page.dart';
 import 'package:my_firebase_app/features/Auth/presentation/resgister_page.dart';
+import 'package:my_firebase_app/features/address/presentation/pages/add_address_page.dart';
+import 'package:my_firebase_app/features/address/presentation/pages/address_list_page.dart';
 import 'package:my_firebase_app/features/admin/presentation/AdminDashboard.dart';
 import 'package:my_firebase_app/features/admin/presentation/add_product_page.dart';
 import 'package:my_firebase_app/features/admin/presentation/edit_product.dart';
+import 'package:my_firebase_app/features/checkout/presentation/checkout_page.dart';
 import 'package:my_firebase_app/features/favorites/presentation/pages/favorit_page.dart';
 import 'package:my_firebase_app/features/layout/BottomNavLayout.dart';
 import 'package:my_firebase_app/core/models/product_model.dart';
@@ -20,6 +24,9 @@ class AppRoutes {
   static const String addProduct = "/addProduct";
   static const String editProduct = "/editProduct";
   static const String favoritesPage = "/FavoritesPage";
+  static const String addAddressPage = "/addAddressPage";
+  static const String addressListPage = "/addressListPage";
+  static const String checkoutPage = "/checkoutPage";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -30,9 +37,20 @@ class AppRoutes {
       case register:
         return MaterialPageRoute(builder: (_) => RegisterPage());
       case productPage:
-        return MaterialPageRoute(builder: (_) => ProductsPage());     
-         case favoritesPage:
-        return MaterialPageRoute(builder: (_) => FavoritesPage());
+        return MaterialPageRoute(builder: (_) => ProductsPage());
+      case favoritesPage:
+        return MaterialPageRoute(builder: (_) => FavoritesPage()); 
+        case checkoutPage:
+        return MaterialPageRoute(builder: (_) => CheckoutPage());
+      case addressListPage:
+        return MaterialPageRoute(
+          builder:
+              (_) => AddressListPage(
+                userId: FirebaseAuth.instance.currentUser!.uid,
+              ),
+        );
+      case addAddressPage:
+        return MaterialPageRoute(builder: (_) => AddAddressPage());
       case adminDashboard:
         return MaterialPageRoute(builder: (_) => AdminDashboard());
       case productDetails:
